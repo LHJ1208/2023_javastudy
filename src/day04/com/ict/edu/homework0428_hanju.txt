@@ -1,0 +1,11 @@
+static double random()	
+Returns a double value with a positive sign, greater than or equal to 0.0 and less than 1.0.
+1.0과 0.0 사이의 무작위 실수값(double)을 반환합니다.
+
+static double pow​(double a, double b)
+Returns the value of the first argument raised to the power of the second argument.
+a의 b제곱한 값(double)을 반환합니다.
+
+static long round​(double a)	
+Returns the closest long to the argument, with ties rounding to positive infinity.
+a를 반올림한 값(long)을 반환합니다.
