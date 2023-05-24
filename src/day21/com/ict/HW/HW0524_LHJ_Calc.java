@@ -1,4 +1,4 @@
-package day19.com.ict.hw;
+package day21.com.ict.HW;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -15,8 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
-public class HW0522_P1_LHJ extends JFrame {
-
+public class HW0524_LHJ_Calc extends JPanel {
 	JPanel np, sp;
 	JTextField jtf1;
 	JTextField jtf2;
@@ -34,8 +32,12 @@ public class HW0522_P1_LHJ extends JFrame {
 	JButton jb2;
 	JButton jb3;
 
-	public HW0522_P1_LHJ() {
-		super("계산기");
+	CalcActionListener calcActionListener;
+
+	public HW0524_LHJ_Calc() {
+		super(new BorderLayout());
+
+		calcActionListener = new CalcActionListener();
 
 		np = new JPanel();
 
@@ -91,49 +93,10 @@ public class HW0522_P1_LHJ extends JFrame {
 
 		add(sp, BorderLayout.SOUTH);
 
-		pack();
-		setLocationRelativeTo(null);
-		setVisible(true);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		jtf1.addActionListener(calcActionListener);
+		jtf2.addActionListener(calcActionListener);
 
-		setResizable(false);
-
-		jb1.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String prnStr = "";
-				double su1 = 0.0;
-				double su2 = 0.0;
-
-				try {
-					su1 = Double.parseDouble(jtf1.getText());
-					su2 = Double.parseDouble(jtf2.getText());
-				} catch (Exception e1) {
-					prnStr = "숫자를 입력하세요.";
-				}
-
-				if (prnStr.length() < 1) {
-					if (jrb1.isSelected()) {
-						prnStr = su1 + " + " + su2 + " = " + (su1 + su2);
-					} else if (jrb2.isSelected()) {
-						prnStr = su1 + " - " + su2 + " = " + (su1 - su2);
-					} else if (jrb3.isSelected()) {
-						prnStr = su1 + " × " + su2 + " = " + (su1 * su2);
-					} else if (jrb4.isSelected()) {
-						if (su2 != 0) {
-							prnStr = su1 + " ÷ " + su2 + " = " + (su1 / su2);
-						} else {
-							prnStr = "0으로 나눌 수 없습니다.";
-						}
-					} else {
-						prnStr = "연산자를 선택하세요.";
-					}
-				}
-
-				prnStr += "\n";
-				jta.append(prnStr);
-			}
-		});
+		jb1.addActionListener(calcActionListener);
 
 		jb2.addActionListener(new ActionListener() {
 			@Override
@@ -153,7 +116,54 @@ public class HW0522_P1_LHJ extends JFrame {
 		});
 	}
 
-	public static void main(String[] args) {
-		new HW0522_P1_LHJ();
+	public class CalcActionListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String prnStr = "";
+			double su1 = 0.0;
+			double su2 = 0.0;
+
+			int i = 0;
+			try {
+				su1 = Double.parseDouble(jtf1.getText());
+				i++;
+				su2 = Double.parseDouble(jtf2.getText());
+				i++;
+			} catch (Exception e1) {
+				prnStr = "숫자를 입력하세요.";
+				switch (i) {
+				case 0:
+					jtf1.setText("");
+					jtf1.requestFocus();
+					break;
+				case 1:
+					jtf2.setText("");
+					jtf2.requestFocus();
+					break;
+				}
+			}
+
+			if (prnStr.length() < 1) {
+				if (jrb1.isSelected()) {
+					prnStr = su1 + " + " + su2 + " = " + (su1 + su2);
+				} else if (jrb2.isSelected()) {
+					prnStr = su1 + " - " + su2 + " = " + (su1 - su2);
+				} else if (jrb3.isSelected()) {
+					prnStr = su1 + " × " + su2 + " = " + (su1 * su2);
+				} else if (jrb4.isSelected()) {
+					if (su2 != 0) {
+						prnStr = su1 + " ÷ " + su2 + " = " + (su1 / su2);
+					} else {
+						prnStr = "0으로 나눌 수 없습니다.";
+					}
+				} else {
+					prnStr = "연산자를 선택하세요.";
+					jrb1.requestFocus();
+				}
+			}
+
+			prnStr += "\n";
+			jta.append(prnStr);
+		}
 	}
 }

@@ -1,14 +1,12 @@
-package day20.com.ict.edu3;
+package day21.com.ict.HW;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -16,10 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
-//대한민국, 캐나다, 영국, 스위스의 수도가 각각 HashMap에 저장시키고
-//원하는 나라가 key 값이 되어, 화면에서 나라를 물어보면 수도가
-//출력되는 프로그램 작성
-public class Ex02_Main extends JFrame {
+public class HW0524_LHJ_Country extends JPanel {
 	HashMap<String, String> map;
 	Set<String> keys;
 
@@ -29,9 +24,9 @@ public class Ex02_Main extends JFrame {
 	JTextArea jta;
 	JScrollPane jsp;
 
-	public Ex02_Main() {
-		super("수도 알아내기");
-
+	public HW0524_LHJ_Country() {
+		super(new BorderLayout());
+		
 		map = new HashMap<>();
 		map.put("대한민국", "서울");
 		map.put("캐나다", "오타와");
@@ -61,13 +56,6 @@ public class Ex02_Main extends JFrame {
 
 		add(jp, BorderLayout.NORTH);
 		add(jsp, BorderLayout.CENTER);
-
-		pack();
-		setLocationRelativeTo(null);
-		setVisible(true);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-		setResizable(false);
 
 		jtf.addActionListener(new ActionListener() {
 			@Override
@@ -110,9 +98,5 @@ public class Ex02_Main extends JFrame {
 
 		jtf.setText("");
 		jtf.requestFocus();
-	}
-
-	public static void main(String[] args) {
-		new Ex02_Main();
 	}
 }
