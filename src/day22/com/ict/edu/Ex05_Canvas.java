@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class Ex05_Canvas extends Canvas {
-	private int x = 50, y = 50, diameter = 50;	
+	private int x = -50, y = -50, diameter = 50;	
 	
 	@Override
 	public void paint(Graphics g) {
@@ -14,7 +14,13 @@ public class Ex05_Canvas extends Canvas {
 		int r3 = (int)(Math.random() * 256);
 		
 		g.setColor(new Color(r1, r2, r3));
-		g.fillOval(x, y, diameter, diameter);
+		g.fillOval(x - diameter/2, y - diameter/2, diameter, diameter);
+	}
+	
+	//기존 내용 그대로 남겨두고 추가하자
+	@Override
+	public void update(Graphics g) {
+		paint(g);
 	}
 	
 	public void setXY(int x, int y, int diameter) {
