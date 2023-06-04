@@ -77,11 +77,11 @@ public class HW0601_Notepad_LHJ extends JFrame {
 		font_form = new JMenu("글자 서식");
 		m_help = new JMenu("도움말");
 
-		i_newFile = new JMenuItem("새파일");
-		i_openFile = new JMenuItem("열 기");
+		i_newFile = new JMenuItem("새로 만들기");
+		i_openFile = new JMenuItem("열 기 ...");
 		i_saveFile = new JMenuItem("저장하기");
-		i_saveFileOhterName = new JMenuItem("다른 이름으로 저장하기");
-		i_exitFile = new JMenuItem("종 료");
+		i_saveFileOhterName = new JMenuItem("다른 이름으로 저장하기 ...");
+		i_exitFile = new JMenuItem("끝 내 기");
 		i_item1 = new JMenuItem("돋움, 기울기, 30");
 		i_item2 = new JMenuItem("궁서, 굵 게, 40");
 		i_item3 = new JMenuItem("굴림, 기 본, 20");
@@ -125,25 +125,27 @@ public class HW0601_Notepad_LHJ extends JFrame {
 		i_newFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// 메모장 안에 글자 존재 여부 확인
-				int size = jta.getText().length();
-				if (size > 0) {
-					// 현재 파일이 제목이 있을 경우 예외 처리 필요
-					int res = JOptionPane.showOptionDialog(getParent(), "변경 내용을 제목 없음에 저장하시겠습니까?", "간단 메모장",
-							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-					if (res == 0) {
-						// 실제 저장하는 코드
-					} else if (res == 1) {
+				if (difference) {
+					int choice = askSaveContents();
+					if (choice == 0 || choice == 1) {
 						jta.setText("");
-						// font 등 세팅 초기화
-						// 현재 파일이 제목이 있을 경우 예외 처리 필요
-					}
 
-//					else if(res == 2) {
-//						//취소 누를 시 아무것도 안 함
-//					}
+						pathFile = null;
+						nameFile = nameNewFile;
+
+						originContents = "";
+						difference = false;
+						setTitle(nameFile + subTitle);
+					}
 				} else {
-					// font 등 세팅 초기화
+					jta.setText("");
+
+					pathFile = null;
+					nameFile = nameNewFile;
+
+					originContents = "";
+					difference = false;
+					setTitle(nameFile + subTitle);
 				}
 
 			}
@@ -155,46 +157,8 @@ public class HW0601_Notepad_LHJ extends JFrame {
 				boolean openEvenet = true;
 
 				if (difference) {
-					Color backColor = new Color(238, 238, 238);
-
-					String msgText = "변경 내용을 ";
-					if (pathFile == null) {
-						msgText += nameFile;
-					} else {
-						msgText += pathFile;
-					}
-					msgText += "에 저장하시겠습니까?";
-
-					JTextPane msg = new JTextPane();
-					msg.setFont(new Font("본고딕", Font.PLAIN, 15));
-					msg.setForeground(Color.BLUE);
-					msg.setBackground(backColor);
-					msg.setText(msgText);
-
-					String[] options = { "저장(S)", "저장 안 함(N)", "취소" };
-
-					int choice = JOptionPane.showOptionDialog(getParent(), msg, "메모장", JOptionPane.YES_NO_CANCEL_OPTION,
-							JOptionPane.PLAIN_MESSAGE, null, options, null);
-
-					switch (choice) {
-					case 0: {
-						String curContents = jta.getText();
-
-						if (pathFile == null) {
-							if (!useDialogForSave()) {
-								openEvenet = false;
-							}
-						} else {
-							if (difference) {
-								saveTextFile(pathFile, curContents);
-								originContents = curContents;
-								difference = false;
-								setTitle(nameFile + subTitle);
-							}
-						}
-						break;
-					}
-					default:
+					int choice = askSaveContents();
+					if (choice < 0 || choice > 1) {
 						openEvenet = false;
 					}
 				}
@@ -223,30 +187,18 @@ public class HW0601_Notepad_LHJ extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String curContents = jta.getText();
 
-				// 파일 저장 다이얼로그
 				if (pathFile == null) {
+					// 파일 저장 다이얼로그
 					useDialogForSave();
-//					FileDialog fd = new FileDialog((JFrame) getParent(), "저장하기", FileDialog.SAVE);
-//					fd.setVisible(true);
-//
-//					String tmpPath = fd.getDirectory() + fd.getFile();
-//
-//					if (!(tmpPath.equals("null") || tmpPath.equals("nullnull"))) {
-//						if (saveTextFile(tmpPath, curContents)) {
-//							pathFile = tmpPath;
-//							nameFile = fd.getFile();
-//							originContents = curContents;
-//							difference = false;
-//							setTitle(nameFile + subTitle);
-//						}
-//					}
 				} else {
 					if (difference) {
-						saveTextFile(pathFile, curContents);
-						originContents = curContents;
-						difference = false;
-						setTitle(nameFile + subTitle);
+						if (saveTextFile(pathFile, curContents)) {
+							originContents = curContents;
+							difference = false;
+							setTitle(nameFile + subTitle);
+						}
 					}
+
 				}
 			}
 		});
@@ -254,20 +206,8 @@ public class HW0601_Notepad_LHJ extends JFrame {
 		i_saveFileOhterName.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				useDialogForSave();
 				// 파일 저장 다이얼로그
-//				FileDialog fd = new FileDialog((JFrame) getParent(), "저장하기", FileDialog.SAVE);
-//				fd.setVisible(true);
-//				String tmpPath = fd.getDirectory() + fd.getFile();
-//				String curContents = jta.getText();
-//				if (!(tmpPath.equals("null") || tmpPath.equals("nullnull"))) {
-//					if (saveTextFile(tmpPath, curContents)) {
-//						pathFile = tmpPath;
-//						nameFile = fd.getFile();
-//						originContents = curContents;
-//						setTitle(nameFile + subTitle);
-//					}
-//				}
+				useDialogForSave();
 			}
 		});
 
@@ -346,6 +286,64 @@ public class HW0601_Notepad_LHJ extends JFrame {
 		});
 	}
 
+	public int askSaveContents() {
+		int result = -1;
+
+		if (difference) {
+			Color backColor = new Color(238, 238, 238);
+
+			String msgText = "변경 내용을 ";
+			if (pathFile == null) {
+				msgText += nameFile;
+			} else {
+				msgText += pathFile;
+			}
+			msgText += "에 저장하시겠습니까?";
+
+//			JTextPane msg = new JTextPane();
+//			msg.setFont(new Font("본고딕", Font.PLAIN, 15));
+//			msg.setForeground(Color.BLUE);
+//			msg.setBackground(backColor);
+//			msg.setText(msgText);
+
+			String msg = msgText;
+
+//			String[] options = { "저장(S)", "저장 안 함(N)", "취소" };
+			String[] options = { "저장", "저장 안 함", "취소" };
+
+			result = JOptionPane.showOptionDialog(getParent(), msg, "메모장", JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.PLAIN_MESSAGE, null, options, null);
+
+			switch (result) {
+			case 0: {
+				String curContents = jta.getText();
+
+				if (pathFile == null) {
+					// 파일 저장 다이얼로그
+					if (!useDialogForSave()) {
+						result = -1;
+						break;
+					}
+				} else {
+					if (difference) {
+						if (saveTextFile(pathFile, curContents)) {
+							originContents = curContents;
+							difference = false;
+							setTitle(nameFile + subTitle);
+						} else {
+							result = -1;
+						}
+					}
+				}
+			}
+			default: {
+			}
+			}
+		}
+
+		return result;
+	}
+
 	public boolean useDialogForSave() {
 		boolean result = true;
 
@@ -356,14 +354,12 @@ public class HW0601_Notepad_LHJ extends JFrame {
 
 		String tmpPath = fd.getDirectory() + fd.getFile();
 
-		if (!(tmpPath.equals("null") || tmpPath.equals("nullnull"))) {
-			if (saveTextFile(tmpPath, curContents)) {
-				pathFile = tmpPath;
-				nameFile = fd.getFile();
-				originContents = curContents;
-				difference = false;
-				setTitle(nameFile + subTitle);
-			}
+		if (saveTextFile(tmpPath, curContents)) {
+			pathFile = tmpPath;
+			nameFile = fd.getFile();
+			originContents = curContents;
+			difference = false;
+			setTitle(nameFile + subTitle);
 		} else {
 			result = false;
 		}
@@ -376,7 +372,8 @@ public class HW0601_Notepad_LHJ extends JFrame {
 
 		String pathTrim = path.trim();
 
-		if (pathTrim.length() > 0) {
+		if (path == null || path.equals("null") || path.equals("nullnull")) {
+		} else if (pathTrim.length() > 0) {
 			File file = new File(pathTrim);
 			FileReader fr = null;
 			BufferedReader br = null;
@@ -394,11 +391,15 @@ public class HW0601_Notepad_LHJ extends JFrame {
 					result = strBuf.toString();
 				}
 			} catch (Exception e) {
+				result = null;
 			} finally {
 				try {
-					br.close();
-					fr.close();
+					if (br != null)
+						br.close();
+					if (br != null)
+						fr.close();
 				} catch (Exception e2) {
+					result = null;
 				}
 			}
 		}
@@ -411,7 +412,9 @@ public class HW0601_Notepad_LHJ extends JFrame {
 
 		String pathTrim = path.trim();
 
-		if (pathTrim.length() > 0) {
+		if (path == null || contents == null || path.equals("null") || path.equals("nullnull")) {
+			result = false;
+		} else if (pathTrim.length() > 0) {
 			File file = new File(pathTrim);
 			FileWriter fw = null;
 			BufferedWriter bw = null;
@@ -422,11 +425,15 @@ public class HW0601_Notepad_LHJ extends JFrame {
 				bw.write(contents);
 				bw.flush();
 			} catch (Exception e) {
+				result = false;
 			} finally {
 				try {
-					bw.close();
-					fw.close();
+					if (bw != null)
+						bw.close();
+					if (fw != null)
+						fw.close();
 				} catch (Exception e2) {
+					result = false;
 				}
 			}
 
