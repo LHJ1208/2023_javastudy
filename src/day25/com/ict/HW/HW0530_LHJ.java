@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 
 public class HW0530_LHJ extends JFrame {
 	JPanel p_North, p_NorthLeft, p_NorthRight, p_South;
@@ -90,6 +89,8 @@ public class HW0530_LHJ extends JFrame {
 		setLocationRelativeTo(null);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		setResizable(false);
 	}
 
 	public static void main(String[] args) {
