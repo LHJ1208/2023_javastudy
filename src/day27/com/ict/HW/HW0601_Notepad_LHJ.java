@@ -147,7 +147,6 @@ public class HW0601_Notepad_LHJ extends JFrame {
 					difference = false;
 					setTitle(nameFile + subTitle);
 				}
-
 			}
 		});
 
@@ -214,9 +213,14 @@ public class HW0601_Notepad_LHJ extends JFrame {
 		i_exitFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-				// 원래는 글자 존재가 있으면 저장할지 물어보고
-				// 내용이 변경되지 않으면 그냥 종료
+				if (difference) {
+					int choice = askSaveContents();
+					if (choice == 0 || choice == 1) {
+						System.exit(0);
+					}
+				} else {
+					System.exit(0);
+				}
 			}
 		});
 
@@ -349,7 +353,7 @@ public class HW0601_Notepad_LHJ extends JFrame {
 
 		String curContents = jta.getText();
 
-		FileDialog fd = new FileDialog((JFrame) getParent(), "저장하기", FileDialog.SAVE);
+		FileDialog fd = new FileDialog((JFrame) getParent(), "다른 이름으로 저장", FileDialog.SAVE);
 		fd.setVisible(true);
 
 		String tmpPath = fd.getDirectory() + fd.getFile();
@@ -384,11 +388,23 @@ public class HW0601_Notepad_LHJ extends JFrame {
 				StringBuffer strBuf = new StringBuffer();
 
 				String input = null;
+				boolean isWrap = false;
 				while ((input = br.readLine()) != null) {
 					strBuf.append(input);
+					strBuf.append('\n');
+					if (input.equals("")) {
+						isWrap = true;
+					} else {
+						isWrap = false;
+					}
+				}
+				if (!isWrap) {
+					strBuf.deleteCharAt(strBuf.length() - 1);
 				}
 				if (strBuf.length() > 0) {
 					result = strBuf.toString();
+				} else {
+					result = "";
 				}
 			} catch (Exception e) {
 				result = null;
@@ -408,12 +424,11 @@ public class HW0601_Notepad_LHJ extends JFrame {
 	}
 
 	static public boolean saveTextFile(String path, String contents) {
-		boolean result = true;
+		boolean result = false;
 
 		String pathTrim = path.trim();
 
 		if (path == null || contents == null || path.equals("null") || path.equals("nullnull")) {
-			result = false;
 		} else if (pathTrim.length() > 0) {
 			File file = new File(pathTrim);
 			FileWriter fw = null;
@@ -424,8 +439,8 @@ public class HW0601_Notepad_LHJ extends JFrame {
 				bw = new BufferedWriter(fw);
 				bw.write(contents);
 				bw.flush();
+				result = true;
 			} catch (Exception e) {
-				result = false;
 			} finally {
 				try {
 					if (bw != null)
@@ -436,9 +451,6 @@ public class HW0601_Notepad_LHJ extends JFrame {
 					result = false;
 				}
 			}
-
-		} else {
-			result = false;
 		}
 
 		return result;

@@ -1,22 +1,15 @@
-package day27.com.ict.edu;
+package jdbc.com.ict.edu5;
 
 import java.awt.FileDialog;
 import java.awt.Font;
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.beans.IntrospectionException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -33,36 +26,18 @@ import javax.swing.ScrollPaneConstants;
 //메뉴아이템 -> 메뉴 -> 메뉴바 -> 프레임
 //메뉴바는 프레임에 붙인다. (setJMenuBar)
 
-//*** 개인적으로 수정하던 코드 ***//
-
-public class Ex07_Menu extends JFrame {
+public class Ex01_Menu extends JFrame {
 	JTextArea jta;
 	JScrollPane jsp;
 	JMenuBar jmb;
 	JMenu m_file, m_form, font_form, m_help;
-	JMenuItem i_newFile, i_openFile, i_saveFile, i_saveFileOhterName, i_exitFile, i_item1, i_item2, i_item3, i_help,
-			i_info;
+	JMenuItem i_newFile, i_openFile, i_saveFile, i_exitFile, i_item1, i_item2, i_item3, i_help, i_info;
 
-	String pathFile = null;
-	String nameFile = null;
+	String deff = "";
+	String openpath = "";
 
-	String originContents = "";
-	boolean difference = false;
-
-	String nameNewFile = "제목 없음";
-	String subTitle = " - Simple 메모장";
-
-	Image notepad_ico = null;
-
-	public Ex07_Menu() {
-		setTitle(nameNewFile + subTitle);
-
-//		notepad_ico = Toolkit.getDefaultToolkit().getImage("src/images/notepad13.png");
-//		setIconImage(notepad_ico);
-//		setTitle(nameNewFile + subTitle);
-
-		nameFile = nameNewFile;
-
+	public Ex01_Menu() {
+		super("간단메모장");
 		jta = new JTextArea();
 		jsp = new JScrollPane(jta, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -76,9 +51,8 @@ public class Ex07_Menu extends JFrame {
 		m_help = new JMenu("도움말");
 
 		i_newFile = new JMenuItem("새파일");
-		i_openFile = new JMenuItem("열 기");
-		i_saveFile = new JMenuItem("저장하기");
-		i_saveFileOhterName = new JMenuItem("다른 이름으로 저장하기");
+		i_openFile = new JMenuItem("열 기 ...");
+		i_saveFile = new JMenuItem("저 장 ...");
 		i_exitFile = new JMenuItem("종 료");
 		i_item1 = new JMenuItem("돋움, 기울기, 30");
 		i_item2 = new JMenuItem("궁서, 굵 게, 40");
@@ -91,7 +65,6 @@ public class Ex07_Menu extends JFrame {
 		m_file.add(i_openFile);
 		m_file.addSeparator();
 		m_file.add(i_saveFile);
-		m_file.add(i_saveFileOhterName);
 		m_file.addSeparator();
 		m_file.add(i_exitFile);
 
@@ -137,9 +110,9 @@ public class Ex07_Menu extends JFrame {
 						// 현재 파일이 제목이 있을 경우 예외 처리 필요
 					}
 
-//					else if(res == 2) {
-//						//취소 누를 시 아무것도 안 함
-//					}
+//						else if(res == 2) {
+//							//취소 누를 시 아무것도 안 함
+//						}
 				} else {
 					// font 등 세팅 초기화
 				}
@@ -153,15 +126,38 @@ public class Ex07_Menu extends JFrame {
 				// 파일 열기 다이얼로그
 				FileDialog fd = new FileDialog((JFrame) getParent(), "불러오기", FileDialog.LOAD);
 				fd.setVisible(true);
+				String msg = fd.getDirectory() + fd.getFile();
+				System.out.println(msg);
+				if (!msg.equals("nullnull")) {
+					File file = new File(msg);
+					FileReader fr = null;
+					BufferedReader br = null;
+					try {
+						fr = new FileReader(file);
+						br = new BufferedReader(fr);
 
-				String tmpPath = fd.getDirectory() + fd.getFile();
-				String input = null;
-				if ((input = loadTextFile(tmpPath)) != null) {
-					pathFile = tmpPath;
-					nameFile = fd.getFile();
-					originContents = input;
-					setTitle(nameFile + subTitle);
-					jta.setText(input);
+						String str = null;
+						jta.setText("");
+						while ((str = br.readLine()) != null) {
+							jta.append(str + '\n');
+						}
+
+						deff = jta.getText();
+						openpath = msg;
+					} catch (Exception e2) {
+					} finally {
+						try {
+							if (br != null) {
+								br.close();
+								br = null;
+							}
+							if (fr != null) {
+								fr.close();
+								fr = null;
+							}
+						} catch (Exception e3) {
+						}
+					}
 				}
 			}
 		});
@@ -170,37 +166,35 @@ public class Ex07_Menu extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// 파일 저장 다이얼로그
-				if (pathFile == null) {
-					FileDialog fd = new FileDialog((JFrame) getParent(), "저장하기", FileDialog.SAVE);
-					fd.setVisible(true);
-
-					String tmpPath = fd.getDirectory() + fd.getFile();
-					String curContents = jta.getText();
-					if (saveTextFile(tmpPath, curContents)) {
-						pathFile = tmpPath;
-						nameFile = fd.getFile();
-						originContents = curContents;
-						setTitle(nameFile + subTitle);
-					}
-				} else {
-					saveTextFile(pathFile, jta.getText());
-				}
-			}
-		});
-
-		i_saveFileOhterName.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// 파일 저장 다이얼로그
 				FileDialog fd = new FileDialog((JFrame) getParent(), "저장하기", FileDialog.SAVE);
 				fd.setVisible(true);
-				String tmpPath = fd.getDirectory() + fd.getFile();
-				String curContents = jta.getText();
-				if (saveTextFile(tmpPath, curContents)) {
-					pathFile = tmpPath;
-					nameFile = fd.getFile();
-					originContents = curContents;
-					setTitle(nameFile + subTitle);
+				String msg = fd.getDirectory() + fd.getFile();
+				if (!msg.equals("nullnull")) {
+					File file = new File(msg);
+					FileWriter fr = null;
+					BufferedWriter br = null;
+					try {
+						fr = new FileWriter(file);
+						br = new BufferedWriter(fr);
+						String str = jta.getText();
+						br.write(str);
+						br.flush();
+						deff = str;
+						openpath = msg;
+					} catch (Exception e2) {
+					} finally {
+						try {
+							if (br != null) {
+								br.close();
+								br = null;
+							}
+							if (fr != null) {
+								fr.close();
+								fr = null;
+							}
+						} catch (Exception e3) {
+						}
+					}
 				}
 			}
 		});
@@ -208,9 +202,48 @@ public class Ex07_Menu extends JFrame {
 		i_exitFile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-				// 원래는 글자 존재가 있으면 저장할지 물어보고
-				// 내용이 변경되지 않으면 그냥 종료
+				if (deff.equals(jta.getText())) {
+					System.exit(0);
+					// 원래는 글자 존재가 있으면 저장할지 물어보고
+					// 내용이 변경되지 않으면 그냥 종료
+				} else {
+					// 다시 저장 다이얼로그
+					// 저장, 저장안함, 취소
+					int res = JOptionPane.showOptionDialog(getParent(), "변경내용을 저장할까요?", "간단 메모장",
+							JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
+					if (res == 0) {
+						// 파일 저장 다이얼로그
+						File file = new File(openpath);
+						FileWriter fr = null;
+						BufferedWriter br = null;
+						try {
+							fr = new FileWriter(file);
+							br = new BufferedWriter(fr);
+							String str = jta.getText();
+							br.write(str);
+							br.flush();
+						} catch (Exception e2) {
+						} finally {
+							try {
+								if (br != null) {
+									br.close();
+									br = null;
+								}
+								if (fr != null) {
+									fr.close();
+									fr = null;
+								}
+								System.out.println("close");
+								System.exit(0);
+							} catch (Exception e3) {
+							}
+						}
+					} else if (res == 1) {
+						System.exit(0);
+					} else {
+						return;
+					}
+				}
 			}
 		});
 
@@ -256,89 +289,9 @@ public class Ex07_Menu extends JFrame {
 				JOptionPane.showMessageDialog(getParent(), "간단 메모장 정보");
 			}
 		});
-
-		jta.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (!originContents.equals(jta.getText())) {
-					setTitle("*" + nameFile + subTitle);
-					difference = true;
-				} else {
-					setTitle(nameFile + subTitle);
-					difference = false;
-				}
-			}
-		});
-	}
-
-	static public String loadTextFile(String path) {
-		String result = null;
-
-		String pathTrim = path.trim();
-
-		if (pathTrim.length() > 0) {
-			File file = new File(pathTrim);
-			FileReader fr = null;
-			BufferedReader br = null;
-
-			try {
-				fr = new FileReader(file);
-				br = new BufferedReader(fr);
-				StringBuffer strBuf = new StringBuffer();
-
-				String input = null;
-				while ((input = br.readLine()) != null) {
-					strBuf.append(input);
-				}
-				if (strBuf.length() > 0) {
-					result = strBuf.toString();
-				}
-			} catch (Exception e) {
-			} finally {
-				try {
-					br.close();
-					fr.close();
-				} catch (Exception e2) {
-				}
-			}
-		}
-
-		return result;
-	}
-
-	static public boolean saveTextFile(String path, String contents) {
-		boolean result = true;
-
-		String pathTrim = path.trim();
-
-		if (pathTrim.length() > 0) {
-			File file = new File(pathTrim);
-			FileWriter fw = null;
-			BufferedWriter bw = null;
-
-			try {
-				fw = new FileWriter(file);
-				bw = new BufferedWriter(fw);
-				bw.write(contents);
-			} catch (Exception e) {
-			} finally {
-				try {
-					bw.close();
-					fw.close();
-				} catch (Exception e2) {
-				}
-			}
-
-		} else {
-			result = false;
-		}
-
-		return result;
 	}
 
 	public static void main(String[] args) {
-//		setDefaultLookAndFeelDecorated(true);
-
-		new Ex07_Menu();
+		new Ex01_Menu();
 	}
 }

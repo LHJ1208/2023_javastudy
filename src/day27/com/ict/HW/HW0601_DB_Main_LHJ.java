@@ -163,11 +163,12 @@ public class HW0601_DB_Main_LHJ extends JFrame {
 		ArrayList<HW0601_DB_VO_LHJ> list = HW0601_DB_DAO_LHJ.getInstance().getSelectAll();
 
 		jta.setText("");
-		jta.append("custid\tname\t\taddress\t\tphone\n");
+		jta.append("\n\t\t\tShow ALL\n\n");
+		jta.append("\tcustid\tname\taddress\t\tphone\n");
 		if (list != null) {
 			for (HW0601_DB_VO_LHJ k : list) {
-				jta.append(k.getCustid() + "\t");
-				jta.append(k.getName() + "\t\t");
+				jta.append("\t" + k.getCustid() + "\t");
+				jta.append(k.getName() + "\t");
 				jta.append(k.getAddress() + "\t\t");
 				jta.append(k.getPhone() + "\n");
 			}
