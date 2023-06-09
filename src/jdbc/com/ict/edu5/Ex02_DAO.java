@@ -53,28 +53,155 @@ public class Ex02_DAO {
 			}
 			return list;
 		} catch (Exception e) {
-			// TODO: handle exception
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+					rs = null;
+				}
+				if (pstm != null) {
+					pstm.close();
+					pstm = null;
+				}
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
 
 	// 삽입
 	public int getInsert(Ex02_VO vo) {
+		try {
+			conn = getConnection();
+			String sql = "insert into customer2(custid, name, address, phone) values(?, ?, ?, ?)";
+			pstm = conn.prepareStatement(sql);
+
+			pstm.setString(1, vo.getCustid());
+			pstm.setString(2, vo.getName());
+			pstm.setString(3, vo.getAddress());
+			pstm.setString(4, vo.getPhone());
+
+			int result = pstm.executeUpdate();
+			return result;
+		} catch (Exception e) {
+		} finally {
+			try {
+				if (pstm != null) {
+					pstm.close();
+					pstm = null;
+				}
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return 0;
 	}
 
 	// 삭제
 	public int getDelete(Ex02_VO vo) {
+		try {
+			conn = getConnection();
+			String sql = "delete from customer2 where custid = ?";
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, vo.getCustid());
+
+			int result = pstm.executeUpdate();
+			return result;
+		} catch (Exception e) {
+		} finally {
+			try {
+				if (pstm != null) {
+					pstm.close();
+					pstm = null;
+				}
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return 0;
 	}
 
 	// 불러오기
 	public Ex02_VO getSelectOne(Ex02_VO vo) {
+		try {
+			conn = getConnection();
+			String sql = "select * from customer2 where custid = ?";
+			pstm = conn.prepareStatement(sql);
+			pstm.setString(1, vo.getCustid());
+
+			rs = pstm.executeQuery();
+			Ex02_VO vo2 = new Ex02_VO();
+			while (rs.next()) {
+				vo2.setCustid(rs.getString(1));
+				vo2.setName(rs.getString(2));
+				vo2.setAddress(rs.getString(3));
+				vo2.setPhone(rs.getString(4));
+			}
+			return vo2;
+		} catch (Exception e) {
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+					rs = null;
+				}
+				if (pstm != null) {
+					pstm.close();
+					pstm = null;
+				}
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return null;
 	}
 
 	// 고치기
 	public int getUpdate(Ex02_VO vo) {
+		try {
+			conn = getConnection();
+			String sql = "update customer2 set name = ?, address = ?, phone = ? where custid = ?";
+			pstm = conn.prepareStatement(sql);
+
+			pstm.setString(1, vo.getName());
+			pstm.setString(2, vo.getAddress());
+			pstm.setString(3, vo.getPhone());
+			pstm.setString(4, vo.getCustid());
+
+			int result = pstm.executeUpdate();
+			return result;
+		} catch (Exception e) {
+		} finally {
+			try {
+				if (pstm != null) {
+					pstm.close();
+					pstm = null;
+				}
+				if (conn != null) {
+					conn.close();
+					conn = null;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		return 0;
 	}
 

@@ -100,28 +100,13 @@ public class HW0601_DB_DAO_LHJ {
 
 		try {
 			conn = getConnection();
-			String sql = "insert into customer2(custid, name, address, phone)" + " values(?, ?, ?, ?)";
+			String sql = "insert into customer2(custid, name, address, phone) values(?, ?, ?, ?)";
 			pstm = conn.prepareStatement(sql);
 
 			pstm.setString(1, vo.getCustid());
-
-			if (vo.getName() == null) {
-				pstm.setNull(2, java.sql.Types.VARCHAR);
-			} else {
-				pstm.setString(2, vo.getName());
-			}
-
-			if (vo.getAddress() == null) {
-				pstm.setNull(3, java.sql.Types.VARCHAR);
-			} else {
-				pstm.setString(3, vo.getAddress());
-			}
-
-			if (vo.getPhone() == null) {
-				pstm.setNull(4, java.sql.Types.VARCHAR);
-			} else {
-				pstm.setString(4, vo.getPhone());
-			}
+			pstm.setString(2, vo.getName());
+			pstm.setString(3, vo.getAddress());
+			pstm.setString(4, vo.getPhone());
 
 			result = pstm.executeUpdate();
 			return result;
@@ -188,24 +173,9 @@ public class HW0601_DB_DAO_LHJ {
 			String sql = "update customer2 set name = ?, address = ?, phone = ? where custid = ?";
 			pstm = conn.prepareStatement(sql);
 
-			if (vo.getName() == null) {
-				pstm.setNull(1, java.sql.Types.VARCHAR);
-			} else {
-				pstm.setString(1, vo.getName());
-			}
-
-			if (vo.getAddress() == null) {
-				pstm.setNull(2, java.sql.Types.VARCHAR);
-			} else {
-				pstm.setString(2, vo.getAddress());
-			}
-
-			if (vo.getPhone() == null) {
-				pstm.setNull(3, java.sql.Types.VARCHAR);
-			} else {
-				pstm.setString(3, vo.getPhone());
-			}
-
+			pstm.setString(1, vo.getName());
+			pstm.setString(2, vo.getAddress());
+			pstm.setString(3, vo.getPhone());
 			pstm.setString(4, vo.getCustid());
 
 			result = pstm.executeUpdate();
