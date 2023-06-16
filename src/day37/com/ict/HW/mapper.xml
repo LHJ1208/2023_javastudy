@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.example.BlogMapper">
+	<!-- 태그 : <태그 속성> 텍스트 </태그> -->
+	<!-- id 속성 : 외부(DAO)에서 해당 태그를 지칭하는(호출하는) 이름, 중복 안 됨 -->
+	<!-- resultType 속성 : 결과에 대한 속성(SELECT문은 95% VO속성이다) -->
+	<!-- SELECT문에서 집계함수를 사용하면 resultType int 이다. -->
+	<!-- parameterType 속성 : #{컬럼명} 의 자료형, 대부분 VO속성이다 -->
+	<!-- <select id="" resultType=""></select> -->
+	<!-- <select id="" resultType="" parameterType=""></select> -->
+
+	<!-- resultType은 없다. 이유는 무조건 int (숫자) -->
+	<!-- <insert id="" parameterType=""></insert> -->
+	<!-- <delete id="" parameterType=""></delete> -->
+	<!-- <update id="" parameterType=""></update> -->
+
+	<!-- Write query here -->
+	<select id="customerSelectAll" resultType="day37.com.ict.HW.HW0616_DB_VO_LHJ">
+	    select * from customer2 order by custid
+	</select>
+	
+	<select id="customerSelectOne" parameterType="String" resultType="day37.com.ict.HW.HW0616_DB_VO_LHJ">
+		select * from customer2 where custid = #{custid}
+	</select>
+	
+	<select id="customerSelectByName" parameterType="String" resultType="day37.com.ict.HW.HW0616_DB_VO_LHJ">
+	    select * from customer2 where name = #{name} order by custid
+	</select>
+	
+	<select id="customerSelectByPhone" parameterType="String" resultType="day37.com.ict.HW.HW0616_DB_VO_LHJ">
+	    select * from customer2 where phone = #{phone} order by custid
+	</select>
+	
+	<select id="customerSelectByyAddress" parameterType="String" resultType="day37.com.ict.HW.HW0616_DB_VO_LHJ">
+	    select * from customer2 where address = #{address} order by custid
+	</select>
+	
+	<insert id="customerInsert" parameterType="day37.com.ict.HW.HW0616_DB_VO_LHJ">
+		insert into customer2(custid, name, address, phone)
+		values(#{custid}, #{name}, #{address}, #{phone})
+	</insert>
+	
+	<delete id="customerDelete" parameterType="day37.com.ict.HW.HW0616_DB_VO_LHJ">
+		delete from customer2 where custid = #{custid}
+	</delete>
+	
+	<update id="customerUpdate" parameterType="day37.com.ict.HW.HW0616_DB_VO_LHJ">
+		update customer2 set name = #{name}, address = #{address}, phone = #{phone}
+		where custid = #{custid}
+	</update>
+
+</mapper>
+
+<!-- mybatis-3.5.13 8 page -->

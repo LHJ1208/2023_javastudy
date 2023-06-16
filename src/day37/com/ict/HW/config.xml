@@ -15,7 +15,7 @@
 		</environment>
 	</environments>
 	<mappers>
-		<mapper resource="mybatis/com/ict/edu/mapper.xml" /> <!-- my mapper -->
+		<mapper resource="day37/com/ict/HW/mapper.xml" /> <!-- my mapper -->
 	</mappers>
 </configuration>
 
